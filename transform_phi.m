@@ -11,11 +11,11 @@ if is_varcov || (ismatrix(phi) && ~isvector(phi))
     if any(asymm_check), error('Non-symmetric matrix passed to transform_phi'); end
     
     vars = diag(phi)'; %make sure this is a row vector
-    sds_trans = m_transform_phi(sqrt(vars)); %model-specific parameter transformation
+    sds_trans = m_transform_phi(sqrt(vars), inG); %model-specific parameter transformation
     phi_trans = transform_covmat(phi, sds_trans);
     
 else
-    phi_trans = m_transform_phi(phi); %model-specific parameter transformation
+    phi_trans = m_transform_phi(phi, inG); %model-specific parameter transformation
     
 end
 

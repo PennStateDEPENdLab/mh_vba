@@ -11,11 +11,11 @@ if is_varcov || (ismatrix(theta) && ~isvector(theta))
     if any(asymm_check), error('Non-symmetric matrix passed to transform_theta'); end
     
     vars = diag(theta)'; %make sure this is a row vector
-    sds_trans = m_transform_theta(sqrt(vars)); %model-specific parameter transformation
+    sds_trans = m_transform_theta(sqrt(vars), inF); %model-specific parameter transformation
     theta_trans = transform_covmat(theta, sds_trans);
     
 else
-    theta_trans = m_transform_theta(theta); %model-specific parameter transformation
+    theta_trans = m_transform_theta(theta, inF); %model-specific parameter transformation
 end
 
 end

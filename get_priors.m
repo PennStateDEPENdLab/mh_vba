@@ -53,15 +53,5 @@ if multisession
     end
 end
 
-%this should really be a model...
-if strcmpi(vo.params, 'fixedparams')
-    dim.n_phi =4;
-    dim.n_theta = 1;
-    priors.muPhi = [-0.2450279; -0.4439473; -0.2729371;-0.006007666];
-    priors.SigmaPhi = zeros(dim.n_phi);
-    priors.muTheta = [-0.3562523];
-    priors.SigmaTheta = zeros(dim.n_theta);
-end
-
 
 end
