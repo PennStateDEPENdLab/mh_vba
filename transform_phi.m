@@ -10,7 +10,7 @@ if is_varcov || (ismatrix(phi) && ~isvector(phi))
     asymm_check = abs(phi - phi') > 1e-5; %if ~issymmetric(phi) %this objects to tiny floating point imprecision??
     if any(asymm_check), error('Non-symmetric matrix passed to transform_phi'); end
     
-    vars = diag(phi)'; %make sure this is a row vector
+    vars = diag(phi); %make sure this is a column vector
     sds_trans = m_transform_phi(sqrt(vars), inG); %model-specific parameter transformation
     phi_trans = transform_covmat(phi, sds_trans);
     

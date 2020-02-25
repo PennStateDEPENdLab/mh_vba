@@ -10,7 +10,7 @@ if is_varcov || (ismatrix(theta) && ~isvector(theta))
     asymm_check = abs(theta - theta') > 1e-5; %if ~issymmetric(theta) %this objects to tiny floating point imprecision??
     if any(asymm_check), error('Non-symmetric matrix passed to transform_theta'); end
     
-    vars = diag(theta)'; %make sure this is a row vector
+    vars = diag(theta); %make sure this is a column vector
     sds_trans = m_transform_theta(sqrt(vars), inF); %model-specific parameter transformation
     theta_trans = transform_covmat(theta, sds_trans);
     
