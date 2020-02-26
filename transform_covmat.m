@@ -4,8 +4,14 @@ function [covmat_trans] = transform_covmat(covmat, sds_trans)
 %
 %this basically converts the original (VBA-internal) covmat to a correlation matrix (standardization),
 %then multiplies the correlation matrix by the transformed SDs of the parameters involved in each cell.
+%
+%sds_trans must be a column vector
+
+if size(sds_trans,2) ~= 1
+    error('in transform_covmat, sds_trans must be a column vector');
+end
 
 corrmat=VBA_cov2corr(covmat); %standardize matrix
-covmat_trans = corrmat .* (sds_trans'*sds_trans); %cf corr2cov in MATLAB finance package
+covmat_trans = corrmat .* (sds_trans*sds_trans'); %cf corr2cov in MATLAB finance package
 
 end
