@@ -110,8 +110,9 @@ for i = 1:ns
   n_obs = size(this_subj.y,2);
 
   %use 'asc_trial' to clarify that trial from VBA is the fitted trial number, which may not correspond to csv input numbering if there are skips
-  t_tbl = table(repmat(this_subj.id, n_obs, 1), repmat(this_subj.model_settings.dataset, n_obs, 1), ...
-    repmat(this_subj.model_settings.model, n_obs, 1), (1:n_obs)', 'VariableNames', {'id', 'dataset', 'model', 'obs_number'});
+  %be careful to wrap character variables (e.g., id) as cells so that they can vary in length across subjects
+  t_tbl = table(repmat({this_subj.id}, n_obs, 1), repmat({this_subj.model_settings.dataset}, n_obs, 1), ...
+    repmat({this_subj.model_settings.model}, n_obs, 1), (1:n_obs)', 'VariableNames', {'id', 'dataset', 'model', 'obs_number'});
 
   if isfield(this_subj, 'hidden_states')
     vcell = array2table(this_subj.hidden_states', 'VariableNames', state_names);
@@ -136,21 +137,8 @@ for i = 1:ns
     t_tbl = horzcat(t_tbl, vcell);
   end
   
-  %This makes strings out of all the subject IDs so that they have the same
-  %dimensions, allowing them to be vertcat-ed later on.
   trial_stats{i} = t_tbl;
-  dimensions=size(trial_stats{i});
-  for j=1:dimensions(1)
-     if(j==1)
-        big_array=trial_stats{i}.id(j,1:14);
-        big_array=convertCharsToStrings(big_array);
-     else
-        array=trial_stats{i}.id(j,1:14);
-        array=convertCharsToStrings(array);
-        big_array=vertcat(big_array,array);
-    end
-  end
-  trial_stats{i}.id=big_array;
+  
 end
 trial_level = vertcat(trial_stats{:});
 writetable(trial_level, trial_level_fname);

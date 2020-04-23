@@ -7,6 +7,11 @@ function [covmat_trans] = transform_covmat(covmat, sds_trans)
 %
 %sds_trans must be a column vector
 
+if isempty(covmat) %if there is no covariance matrix to speak of (e.g., if phi or theta are empty), just return an empty
+    covmat_trans=[];
+    return;
+end
+
 if size(sds_trans,2) ~= 1
     error('in transform_covmat, sds_trans must be a column vector');
 end
