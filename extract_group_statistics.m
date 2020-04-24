@@ -29,17 +29,17 @@ end
 
 state_names = cellfun(@(x) {x.model_settings.state_names{:}}, s_array, 'UniformOutput', false);
 if ~isequal(state_names{:})
-    error('Hidden state names do not match across subjects in s_array');
+  error('Hidden state names do not match across subjects in s_array');
 else
-    state_names = state_names{1}; %just use first element for output table names
+  state_names = state_names{1}; %just use first element for output table names
 end
 
 %validate y names
-    y_names = cellfun(@(x) {x.model_settings.y_names{:}}, s_array, 'UniformOutput', false);
+y_names = cellfun(@(x) {x.model_settings.y_names{:}}, s_array, 'UniformOutput', false);
 if ~isequal(y_names{:})
-    error('y names do not match across subjects in s_array');
+  error('y names do not match across subjects in s_array');
 else
-    y_names = y_names{1}; %just use first element for output table names
+  y_names = y_names{1}; %just use first element for output table names
 end
 
 
@@ -108,17 +108,17 @@ trial_stats=cell(1,ns);
 for i = 1:ns
   this_subj = s_array{i};
   n_obs = size(this_subj.y,2);
-
+  
   %use 'asc_trial' to clarify that trial from VBA is the fitted trial number, which may not correspond to csv input numbering if there are skips
   %be careful to wrap character variables (e.g., id) as cells so that they can vary in length across subjects
   t_tbl = table(repmat({this_subj.id}, n_obs, 1), repmat({this_subj.model_settings.dataset}, n_obs, 1), ...
     repmat({this_subj.model_settings.model}, n_obs, 1), (1:n_obs)', 'VariableNames', {'id', 'dataset', 'model', 'obs_number'});
-
+  
   if isfield(this_subj, 'hidden_states')
     vcell = array2table(this_subj.hidden_states', 'VariableNames', state_names);
     t_tbl = horzcat(t_tbl, vcell);
   end
-
+  
   %observed responses
   if isfield(this_subj, 'y')
     vcell = array2table(this_subj.y', 'VariableNames', y_names);
@@ -131,15 +131,36 @@ for i = 1:ns
     t_tbl = horzcat(t_tbl, vcell);
   end
   
+  %input variables in VBA fitting
   if isfield(this_subj, 'u')
     vnames = cellfun(@(x) strcat('u_', num2str(x)), num2cell(1:size(this_subj.u,1)), 'UniformOutput', false);
     vcell = array2table(this_subj.u', 'VariableNames', vnames);
     t_tbl = horzcat(t_tbl, vcell);
   end
   
+  %additional trial variables to export
+  if isfield(this_subj, 'additional_trial')
+    fields=fieldnames(this_subj.additional_trial);
+    
+    for j = 1:numel(fields)
+      if ~any(size(this_subj.additional_trial.(fields{j})) == n_obs)
+        error('Field %s does not have number of elements matching n_obs', fields{j});
+      else
+        if size(this_subj.additional_trial.(fields{j}),1) ~= n_obs
+          %transpose so that we have trial x variables for struct2table
+          this_subj.additional_trial.(fields{j}) = this_subj.additional_trial.(fields{j})';
+        end
+      end
+    end
+    
+    vcell = struct2table(this_subj.additional_trial);
+    t_tbl = horzcat(t_tbl, vcell);
+  end
+  
   trial_stats{i} = t_tbl;
   
 end
+
 trial_level = vertcat(trial_stats{:});
 writetable(trial_level, trial_level_fname);
 end

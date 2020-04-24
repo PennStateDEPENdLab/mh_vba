@@ -56,4 +56,10 @@ s.priors = rmfield(s.priors, {'SigmaX', 'iQx', 'iQy'});
 %% model settings
 s.model_settings = out.options.inF; %should contain key ingredients from so object and fitting
 
+%% additional fields to carry forward in global and trial outputs
+if isfield(out, 'additional')
+    if isfield(out.additional, 'global'), s.additional_global = out.additional.global; end
+    if isfield(out.additional, 'trial'), s.additional_trial = out.additional.trial; end
+end
+
 end

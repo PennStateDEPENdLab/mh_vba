@@ -6,8 +6,8 @@ else
     priors=[];
 end
 
-multisession = vo.multisession;
-fixed = vo.fixed;
+% multisession = vo.multisession;
+% fixed = vo.fixed;
 
 %gamma math:
 % mean = alpha / beta
@@ -33,25 +33,25 @@ if ~isfield(priors, 'SigmaX0')
 end
 
 % TODO: not currently returning the options structure
-if multisession
-    options.multisession.split = repmat(vo.n_t/vo.n_trustees,1,vo.n_trustees); %splitting the sessions
-    % fix parameters
-    if fixed == 1
-        options.multisession.fixed.theta = 'all';
-        options.multisession.fixed.phi = 1:2;   %fixing the beta and kappa (subject-specific bias) parameters to be the same across all sessions
-        priors.SigmaX0 = diag([.3 0]);  %X0 is allowed to vary between sessions
-    elseif fixed == 2
-        options.multisession.fixed.theta = 'all';
-        options.multisession.fixed.phi = 1;    %fixing the beta parameter to be the same across sessions; subject-wise kappa varies between sessions
-        options.multisession.fixed.X0 = 'all';
-        priors.SigmaX0 = diag([0 0]);   %infinite precision priors set on the initial value and PEs
-    elseif fixed == 3
-        options.multisession.fixed.theta = 'all';
-        options.multisession.fixed.phi = 1:2;   %fixing the beta and kappa (subject-specific bias) parameters to be the same across all sessions
-        options.multisession.fixed.X0 = 'all';
-        priors.SigmaX0 = diag([0 0]);   %infinite precision priors set on the initial value and PEs
-    end
-end
+% if multisession
+%     options.multisession.split = repmat(vo.n_t/vo.n_trustees,1,vo.n_trustees); %splitting the sessions
+%     % fix parameters
+%     if fixed == 1
+%         options.multisession.fixed.theta = 'all';
+%         options.multisession.fixed.phi = 1:2;   %fixing the beta and kappa (subject-specific bias) parameters to be the same across all sessions
+%         priors.SigmaX0 = diag([.3 0]);  %X0 is allowed to vary between sessions
+%     elseif fixed == 2
+%         options.multisession.fixed.theta = 'all';
+%         options.multisession.fixed.phi = 1;    %fixing the beta parameter to be the same across sessions; subject-wise kappa varies between sessions
+%         options.multisession.fixed.X0 = 'all';
+%         priors.SigmaX0 = diag([0 0]);   %infinite precision priors set on the initial value and PEs
+%     elseif fixed == 3
+%         options.multisession.fixed.theta = 'all';
+%         options.multisession.fixed.phi = 1:2;   %fixing the beta and kappa (subject-specific bias) parameters to be the same across all sessions
+%         options.multisession.fixed.X0 = 'all';
+%         priors.SigmaX0 = diag([0 0]);   %infinite precision priors set on the initial value and PEs
+%     end
+% end
 
 
 end
